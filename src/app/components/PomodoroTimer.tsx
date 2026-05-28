@@ -13,7 +13,7 @@ const TIMER_CONFIGS = {
   'pomodoro-25': { work: 25 * 60, shortBreak: 5 * 60, longBreak: 15 * 60 },
   'pomodoro-120': { work: 120 * 60, shortBreak: 20 * 60, longBreak: 30 * 60 },
   'pomodoro-240': { work: 240 * 60, shortBreak: 30 * 60, longBreak: 45 * 60 },
-  'custom': { work: 30 * 60, shortBreak: 10 * 60, longBreak: 20 * 60 },
+  custom: { work: 30 * 60, shortBreak: 10 * 60, longBreak: 20 * 60 },
 };
 
 export function PomodoroTimer({ timerType, onBack }: PomodoroTimerProps) {
@@ -25,7 +25,7 @@ export function PomodoroTimer({ timerType, onBack }: PomodoroTimerProps) {
   const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout | null = null;
+    let interval: ReturnType<typeof setInterval> | null = null;
 
     if (isRunning && timeLeft > 0) {
       interval = setInterval(() => {
@@ -33,11 +33,14 @@ export function PomodoroTimer({ timerType, onBack }: PomodoroTimerProps) {
           if (prev <= 1) {
             setIsRunning(false);
             playNotification();
+
             if (mode === 'work') {
               setSessionsCompleted((s) => s + 1);
             }
+
             return 0;
           }
+
           return prev - 1;
         });
       }, 1000);
@@ -60,9 +63,14 @@ export function PomodoroTimer({ timerType, onBack }: PomodoroTimerProps) {
     const secs = seconds % 60;
 
     if (hrs > 0) {
-      return `${hrs}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+      return `${hrs}:${mins.toString().padStart(2, '0')}:${secs
+        .toString()
+        .padStart(2, '0')}`;
     }
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+
+    return `${mins.toString().padStart(2, '0')}:${secs
+      .toString()
+      .padStart(2, '0')}`;
   };
 
   const handleModeChange = (newMode: TimerMode) => {
@@ -76,126 +84,132 @@ export function PomodoroTimer({ timerType, onBack }: PomodoroTimerProps) {
     setIsRunning(false);
   };
 
-  const getDuration = (mode: TimerMode) => config[mode];
+  const getDuration = (timerMode: TimerMode) => config[timerMode];
   const progress = ((getDuration(mode) - timeLeft) / getDuration(mode)) * 100;
 
   return (
     <div className="min-h-screen">
-      {/* Back Button */}
       <button
         onClick={onBack}
-        className="fixed top-28 left-12 text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 z-20"
+        className="fixed left-4 top-24 z-20 flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground sm:left-8 lg:left-12"
       >
-        <ArrowLeft className="w-5 h-5" />
+        <ArrowLeft className="h-5 w-5" />
         Back
       </button>
 
-      <div className="flex items-start justify-center min-h-screen p-16 pt-32">
-        {/* Timer Content */}
-        <div className="flex flex-col items-center justify-center flex-1">
+      <div className="flex min-h-screen items-start justify-center px-4 pb-16 pt-32 sm:px-6 lg:px-16">
+        <div className="flex flex-1 flex-col items-center justify-center">
+          <div className="mb-10 sm:mb-16 lg:mb-20">
+            <div className="flex flex-wrap justify-center gap-3">
+              <button
+                onClick={() => handleModeChange('work')}
+                className={`rounded-full px-5 py-3 transition-all sm:px-8 ${
+                  mode === 'work'
+                    ? 'bg-primary text-primary-foreground'
+                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                }`}
+              >
+                Focus
+              </button>
 
-      {/* Mode Selector */}
-      <div className="mb-20">
-        <div className="flex gap-3">
-          <button
-            onClick={() => handleModeChange('work')}
-            className={`px-8 py-3 rounded-full transition-all ${
-              mode === 'work'
-                ? 'bg-primary text-primary-foreground'
-                : 'text-muted-foreground hover:text-foreground hover:bg-muted'
-            }`}
-          >
-            Focus
-          </button>
-          <button
-            onClick={() => handleModeChange('shortBreak')}
-            className={`px-8 py-3 rounded-full transition-all ${
-              mode === 'shortBreak'
-                ? 'bg-primary text-primary-foreground'
-                : 'text-muted-foreground hover:text-foreground hover:bg-muted'
-            }`}
-          >
-            Short Break
-          </button>
-          <button
-            onClick={() => handleModeChange('longBreak')}
-            className={`px-8 py-3 rounded-full transition-all ${
-              mode === 'longBreak'
-                ? 'bg-primary text-primary-foreground'
-                : 'text-muted-foreground hover:text-foreground hover:bg-muted'
-            }`}
-          >
-            Long Break
-          </button>
-        </div>
-      </div>
+              <button
+                onClick={() => handleModeChange('shortBreak')}
+                className={`rounded-full px-5 py-3 transition-all sm:px-8 ${
+                  mode === 'shortBreak'
+                    ? 'bg-primary text-primary-foreground'
+                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                }`}
+              >
+                Short Break
+              </button>
 
-      {/* Timer Display */}
-      <div className="relative mb-20">
-        <svg className="w-[480px] h-[480px] -rotate-90" viewBox="0 0 200 200">
-          <circle
-            cx="100"
-            cy="100"
-            r="85"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="4"
-            className="text-muted"
-          />
-          <circle
-            cx="100"
-            cy="100"
-            r="85"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="4"
-            strokeDasharray={`${2 * Math.PI * 85}`}
-            strokeDashoffset={`${2 * Math.PI * 85 * (1 - progress / 100)}`}
-            strokeLinecap="round"
-            className="text-primary transition-all duration-1000"
-          />
-        </svg>
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-center">
-            <div className="text-[120px] font-mono tracking-tighter leading-none tabular-nums">
-              {formatTime(timeLeft)}
+              <button
+                onClick={() => handleModeChange('longBreak')}
+                className={`rounded-full px-5 py-3 transition-all sm:px-8 ${
+                  mode === 'longBreak'
+                    ? 'bg-primary text-primary-foreground'
+                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                }`}
+              >
+                Long Break
+              </button>
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* Controls */}
-      <div className="flex items-center justify-center gap-6 mb-24">
-        <button
-          onClick={() => setIsRunning(!isRunning)}
-          className="bg-primary text-primary-foreground hover:bg-accent transition-colors rounded-full p-8"
-          aria-label={isRunning ? 'Pause' : 'Start'}
-        >
-          {isRunning ? <Pause className="w-10 h-10" /> : <Play className="w-10 h-10 ml-1" />}
-        </button>
-        <button
-          onClick={handleReset}
-          className="bg-muted text-foreground hover:bg-secondary transition-colors rounded-full p-8"
-          aria-label="Reset"
-        >
-          <RotateCcw className="w-10 h-10" />
-        </button>
-      </div>
+          <div className="relative mb-12 sm:mb-16 lg:mb-20">
+            <svg
+              className="h-[280px] w-[280px] -rotate-90 sm:h-[360px] sm:w-[360px] lg:h-[480px] lg:w-[480px]"
+              viewBox="0 0 200 200"
+            >
+              <circle
+                cx="100"
+                cy="100"
+                r="85"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="4"
+                className="text-muted"
+              />
+              <circle
+                cx="100"
+                cy="100"
+                r="85"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="4"
+                strokeDasharray={`${2 * Math.PI * 85}`}
+                strokeDashoffset={`${2 * Math.PI * 85 * (1 - progress / 100)}`}
+                strokeLinecap="round"
+                className="text-primary transition-all duration-1000"
+              />
+            </svg>
 
-      {/* Sessions Completed */}
-      <div className="text-center">
-        <p className="text-muted-foreground mb-2 uppercase tracking-wide text-sm">
-          Sessions Completed Today
-        </p>
-        <p className="text-6xl tabular-nums">{sessionsCompleted}</p>
-      </div>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="text-center">
+                <div className="font-mono text-[58px] leading-none tracking-tighter tabular-nums sm:text-[88px] lg:text-[120px]">
+                  {formatTime(timeLeft)}
+                </div>
+              </div>
+            </div>
+          </div>
 
-      <audio ref={audioRef} preload="auto">
-        <source
-          src="data:audio/wav;base64,UklGRhYAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQIAAAD//w=="
-          type="audio/wav"
-        />
-      </audio>
+          <div className="mb-16 flex items-center justify-center gap-5 sm:gap-6 lg:mb-24">
+            <button
+              onClick={() => setIsRunning(!isRunning)}
+              className="rounded-full bg-primary p-6 text-primary-foreground transition-colors hover:bg-accent sm:p-8"
+              aria-label={isRunning ? 'Pause' : 'Start'}
+            >
+              {isRunning ? (
+                <Pause className="h-8 w-8 sm:h-10 sm:w-10" />
+              ) : (
+                <Play className="ml-1 h-8 w-8 sm:h-10 sm:w-10" />
+              )}
+            </button>
+
+            <button
+              onClick={handleReset}
+              className="rounded-full bg-muted p-6 text-foreground transition-colors hover:bg-secondary sm:p-8"
+              aria-label="Reset"
+            >
+              <RotateCcw className="h-8 w-8 sm:h-10 sm:w-10" />
+            </button>
+          </div>
+
+          <div className="text-center">
+            <p className="mb-2 text-sm uppercase tracking-wide text-muted-foreground">
+              Sessions Completed Today
+            </p>
+            <p className="text-5xl tabular-nums sm:text-6xl">
+              {sessionsCompleted}
+            </p>
+          </div>
+
+          <audio ref={audioRef} preload="auto">
+            <source
+              src="data:audio/wav;base64,UklGRhYAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQIAAAD//w=="
+              type="audio/wav"
+            />
+          </audio>
         </div>
       </div>
     </div>

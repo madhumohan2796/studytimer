@@ -46,27 +46,32 @@ export function TimerHome({ onTimerSelect }: TimerHomeProps) {
   ];
 
   return (
-    <div className="flex flex-col items-center justify-center px-16 py-24 min-h-screen">
+    <div className="flex min-h-screen flex-col items-center justify-center px-4 py-24 sm:px-6 lg:px-16">
       <div className="w-full max-w-6xl">
-        <div className="text-center mb-16">
-          <h1 className="text-7xl mb-4">Choose Your Timer</h1>
-          <p className="text-muted-foreground text-xl">
+        <div className="mb-12 text-center sm:mb-16">
+          <h1 className="mb-4 text-4xl sm:text-5xl lg:text-7xl">
+            Choose Your Timer
+          </h1>
+          <p className="text-lg text-muted-foreground sm:text-xl">
             Select a focus mode to begin
           </p>
         </div>
 
-        <div className="grid grid-cols-3 gap-6 mb-16">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {timerOptions.map((option) => {
             const Icon = option.icon;
+
             return (
               <button
                 key={option.id}
                 onClick={() => onTimerSelect(option.id)}
-                className="bg-card hover:bg-muted border border-border rounded-3xl p-10 text-left transition-all hover:scale-105 hover:shadow-xl"
+                className="rounded-3xl border border-border bg-card p-6 text-left transition-all hover:scale-[1.02] hover:bg-muted hover:shadow-xl sm:p-8 lg:p-10"
               >
-                <Icon className="w-12 h-12 mb-6 text-primary" />
-                <h2 className="text-3xl mb-2">{option.title}</h2>
-                <p className="text-primary text-xl mb-3">{option.duration}</p>
+                <Icon className="mb-6 h-10 w-10 text-primary sm:h-12 sm:w-12" />
+                <h2 className="mb-2 text-2xl sm:text-3xl">{option.title}</h2>
+                <p className="mb-3 text-lg text-primary sm:text-xl">
+                  {option.duration}
+                </p>
                 <p className="text-muted-foreground">{option.description}</p>
               </button>
             );

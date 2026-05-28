@@ -90,8 +90,8 @@ const blogContent: Record<string, any> = {
       <ul>
         <li>Schedule specific blocks for deep work and treat them as non-negotiable</li>
         <li>Eliminate all distractions: turn off notifications, close unnecessary tabs, put your phone in another room</li>
-        <li>Start with shorter sessions (25-50 minutes) and gradually build up your capacity</li>
-        <li>Batch shallow work into dedicated time blocks rather than letting it interrupt deep work</li>
+        <li>Start with shorter sessions and gradually build up your capacity</li>
+        <li>Batch shallow work into dedicated time blocks</li>
       </ul>
 
       <p>The modern world constantly pulls us toward shallow work. Resisting this pull and protecting time for deep work is one of the most valuable skills you can develop.</p>
@@ -113,23 +113,12 @@ const blogContent: Record<string, any> = {
         <li>A few minutes of yoga</li>
         <li>Dancing to a favorite song</li>
       </ul>
-      <p>Movement increases blood flow to the brain, delivering oxygen and nutrients that help you think more clearly.</p>
 
       <h2>Nature Exposure</h2>
-      <p>Even brief exposure to nature can restore mental energy. If possible, step outside and look at trees, the sky, or water. If you can't go outside, looking at images of nature or keeping plants nearby can provide similar benefits.</p>
-
-      <h2>Mindfulness and Meditation</h2>
-      <p>A short meditation or breathing exercise can help reset your nervous system. Try the 4-7-8 breathing technique: inhale for 4 counts, hold for 7 counts, exhale for 8 counts. Repeat 3-4 times.</p>
+      <p>Even brief exposure to nature can restore mental energy. If possible, step outside and look at trees, the sky, or water.</p>
 
       <h2>What to Avoid</h2>
-      <p>Certain activities might seem relaxing but actually drain your mental energy:</p>
-      <ul>
-        <li>Social media scrolling—it's designed to be addictive and hard to stop</li>
-        <li>Starting a new cognitively demanding task</li>
-        <li>Watching videos or TV shows—easy to get sucked in beyond your break time</li>
-      </ul>
-
-      <p>The goal of a break is to give your mind a rest while keeping your energy up. Choose activities that are genuinely restorative, not just superficially entertaining.</p>
+      <p>Avoid social media scrolling, starting another difficult task, or watching videos that are easy to continue beyond your break time.</p>
     `,
   },
   '5': {
@@ -138,38 +127,27 @@ const blogContent: Record<string, any> = {
     readTime: '8 min read',
     category: 'Study Tips',
     content: `
-      <p>Time blocking is a time management method that involves dividing your day into blocks of time, with each block dedicated to a specific task or type of work. For students juggling multiple classes, assignments, and activities, this technique can be transformative.</p>
+      <p>Time blocking is a time management method that involves dividing your day into blocks of time, with each block dedicated to a specific task or type of work.</p>
 
       <h2>Why Time Blocking Works</h2>
-      <p>When you time block, you make decisions about your time in advance, rather than constantly asking yourself "what should I work on next?" This reduces decision fatigue and makes it easier to get started on important tasks.</p>
+      <p>When you time block, you make decisions about your time in advance, rather than constantly asking yourself what to work on next.</p>
 
       <h2>How to Create Your Time Blocks</h2>
-      <p>Start by listing all your commitments: classes, study time, meals, sleep, exercise, social activities, and free time. Then create blocks for each:</p>
+      <p>Start by listing all your commitments: classes, study time, meals, sleep, exercise, social activities, and free time.</p>
 
       <h3>Fixed Blocks</h3>
       <p>These are non-negotiable commitments like class times, work shifts, or team practice. Schedule these first.</p>
 
       <h3>Priority Blocks</h3>
-      <p>Dedicate your peak energy hours to your most important or difficult work. For most people, this is 2-4 hours after waking up.</p>
-
-      <h3>Maintenance Blocks</h3>
-      <p>Schedule time for routine tasks like email, organizing notes, or meal prep. Batching these activities is more efficient than scattering them throughout the day.</p>
-
-      <h3>Buffer Blocks</h3>
-      <p>Leave some unscheduled time between blocks for transitions, unexpected issues, or tasks that run over.</p>
+      <p>Dedicate your peak energy hours to your most important or difficult work.</p>
 
       <h2>Common Mistakes to Avoid</h2>
       <ul>
-        <li>Overestimating how much you can accomplish in a time block</li>
-        <li>Not building in breaks between blocks</li>
-        <li>Creating blocks that are too rigid—allow for some flexibility</li>
-        <li>Forgetting to schedule time for rest and recreation</li>
+        <li>Overestimating how much you can accomplish</li>
+        <li>Not building in breaks</li>
+        <li>Creating blocks that are too rigid</li>
+        <li>Forgetting to schedule rest</li>
       </ul>
-
-      <h2>Tools for Time Blocking</h2>
-      <p>You can use digital calendars like Google Calendar, specialized apps like Todoist or Notion, or simply a paper planner. The key is consistency—stick with one system long enough for it to become habitual.</p>
-
-      <p>Time blocking isn't about cramming more into your day. It's about being intentional with your time and ensuring your schedule aligns with your priorities.</p>
     `,
   },
   '6': {
@@ -178,32 +156,22 @@ const blogContent: Record<string, any> = {
     readTime: '5 min read',
     category: 'Productivity',
     content: `
-      <p>It might seem counterintuitive, but taking regular short breaks can actually increase your overall productivity. Here's what the science says.</p>
+      <p>It might seem counterintuitive, but taking regular short breaks can actually increase your overall productivity.</p>
 
       <h2>The Ultradian Rhythm</h2>
-      <p>Your body operates on an ultradian rhythm—a 90-120 minute cycle of peak performance followed by a natural dip in energy and focus. Fighting this rhythm leads to diminishing returns. Working with it by taking breaks maximizes your effectiveness.</p>
+      <p>Your body operates on an ultradian rhythm—a cycle of peak performance followed by a natural dip in energy and focus.</p>
 
-      <h2>Attention Restoration Theory</h2>
-      <p>Researchers have found that our ability to concentrate is a limited resource. When you focus intensely, you deplete this resource. Short breaks help restore your attention capacity, allowing you to return to work with renewed focus.</p>
-
-      <h2>Memory Consolidation</h2>
-      <p>Studies show that your brain continues processing information during breaks. This is called "offline learning," and it's crucial for moving information from short-term to long-term memory. Without breaks, you learn less effectively.</p>
-
-      <h2>Creativity Boost</h2>
-      <p>Some of our best ideas come when we're not actively working on a problem. Breaks allow your mind to make unexpected connections and find creative solutions that wouldn't emerge during focused work.</p>
+      <h2>Attention Restoration</h2>
+      <p>Our ability to concentrate is a limited resource. Short breaks help restore your attention capacity.</p>
 
       <h2>Optimal Break Timing</h2>
-      <p>Research suggests:</p>
       <ul>
-        <li>Take a 5-minute break every 25-30 minutes for intensive mental work</li>
+        <li>Take a 5-minute break every 25-30 minutes</li>
         <li>Take a longer 15-20 minute break every 90-120 minutes</li>
-        <li>Stand up and move during breaks to maximize the restorative effect</li>
+        <li>Stand up and move during breaks</li>
       </ul>
 
-      <h2>The Productivity Paradox</h2>
-      <p>More hours doesn't equal more output. A study of knowledge workers found that those who took regular breaks accomplished more and produced higher quality work than those who powered through without stopping.</p>
-
-      <p>Think of breaks not as time away from work, but as an essential part of working effectively. They're not a luxury—they're a necessity for sustained high performance.</p>
+      <p>Think of breaks not as time away from work, but as an essential part of working effectively.</p>
     `,
   },
 };
@@ -213,13 +181,10 @@ export function BlogPost({ blogId, onBack }: BlogPostProps) {
 
   if (!post) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex min-h-screen items-center justify-center px-4">
         <div className="text-center">
-          <h1 className="text-4xl mb-4">Post not found</h1>
-          <button
-            onClick={onBack}
-            className="text-primary hover:underline"
-          >
+          <h1 className="mb-4 text-3xl sm:text-4xl">Post not found</h1>
+          <button onClick={onBack} className="text-primary hover:underline">
             Back to blog
           </button>
         </div>
@@ -228,44 +193,43 @@ export function BlogPost({ blogId, onBack }: BlogPostProps) {
   }
 
   return (
-    <div className="px-16 py-24 min-h-screen">
-      <div className="max-w-4xl mx-auto">
-        {/* Back Button */}
+    <div className="min-h-screen px-4 py-24 sm:px-6 lg:px-16">
+      <div className="mx-auto max-w-4xl">
         <button
           onClick={onBack}
-          className="mb-12 text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2"
+          className="mb-10 flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground sm:mb-12"
         >
-          <ArrowLeft className="w-5 h-5" />
+          <ArrowLeft className="h-5 w-5" />
           Back to blog
         </button>
 
-        {/* Post Header */}
-        <div className="mb-12">
-          <div className="mb-6">
-            <span className="text-primary text-sm uppercase tracking-wide">
+        <div className="mb-10 sm:mb-12">
+          <div className="mb-5 sm:mb-6">
+            <span className="text-sm uppercase tracking-wide text-primary">
               {post.category}
             </span>
           </div>
-          <h1 className="text-6xl mb-6">{post.title}</h1>
-          <div className="flex items-center gap-6 text-muted-foreground">
+
+          <h1 className="mb-6 text-4xl leading-tight sm:text-5xl lg:text-6xl">
+            {post.title}
+          </h1>
+
+          <div className="flex flex-wrap items-center gap-4 text-muted-foreground sm:gap-6">
             <div className="flex items-center gap-2">
-              <Calendar className="w-4 h-4" />
+              <Calendar className="h-4 w-4" />
               {post.date}
             </div>
             <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4" />
+              <Clock className="h-4 w-4" />
               {post.readTime}
             </div>
           </div>
         </div>
 
-        {/* Post Content */}
-        <div className="prose prose-lg max-w-none">
-          <article
-            className="text-foreground [&>p]:mb-6 [&>p]:leading-relaxed [&>h2]:text-4xl [&>h2]:mt-12 [&>h2]:mb-6 [&>h3]:text-2xl [&>h3]:mt-8 [&>h3]:mb-4 [&>ul]:mb-6 [&>ul]:ml-6 [&>ul>li]:mb-2 [&>ul>li]:list-disc"
-            dangerouslySetInnerHTML={{ __html: post.content }}
-          />
-        </div>
+        <article
+          className="text-foreground [&>h2]:mb-5 [&>h2]:mt-10 [&>h2]:text-3xl [&>h2]:leading-tight sm:[&>h2]:text-4xl [&>h3]:mb-3 [&>h3]:mt-8 [&>h3]:text-2xl [&>p]:mb-6 [&>p]:leading-relaxed [&>ul]:mb-6 [&>ul]:ml-6 [&>ul>li]:mb-2 [&>ul>li]:list-disc"
+          dangerouslySetInnerHTML={{ __html: post.content }}
+        />
       </div>
     </div>
   );
