@@ -3,9 +3,10 @@ import { Play, Pause, RotateCcw, ArrowLeft } from 'lucide-react';
 
 interface StopwatchProps {
   onBack: () => void;
+  onSaveSession?: (session: { type: string; duration: number }) => void;
 }
 
-export function Stopwatch({ onBack }: StopwatchProps) {
+export function Stopwatch({ onBack, onSaveSession }: StopwatchProps) {
   const [timeElapsed, setTimeElapsed] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -43,6 +44,13 @@ export function Stopwatch({ onBack }: StopwatchProps) {
   };
 
   const handleReset = () => {
+    if (timeElapsed >= 60) {
+      onSaveSession?.({
+        type: 'stopwatch',
+        duration: Math.max(1, Math.round(timeElapsed / 60)),
+      });
+    }
+
     setTimeElapsed(0);
     setIsRunning(false);
   };
@@ -61,6 +69,9 @@ export function Stopwatch({ onBack }: StopwatchProps) {
         <div className="flex flex-1 flex-col items-center justify-center">
           <div className="mb-10 text-center sm:mb-12">
             <h1 className="text-4xl sm:text-5xl">Stopwatch</h1>
+            <p className="mt-3 text-muted-foreground">
+              Press reset after studying to save this session.
+            </p>
           </div>
 
           <div className="mb-12 sm:mb-16 lg:mb-20">

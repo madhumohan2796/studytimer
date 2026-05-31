@@ -7,6 +7,7 @@ type TimerType = 'pomodoro-25' | 'pomodoro-120' | 'pomodoro-240';
 interface PomodoroTimerProps {
   timerType: TimerType;
   onBack: () => void;
+  onSaveSession?: (session: { type: string; duration: number }) => void;
 }
 
 const TIMER_CONFIGS = {
@@ -15,7 +16,11 @@ const TIMER_CONFIGS = {
   'pomodoro-240': { work: 240 * 60, shortBreak: 30 * 60, longBreak: 45 * 60 },
 };
 
-export function PomodoroTimer({ timerType, onBack }: PomodoroTimerProps) {
+export function PomodoroTimer({
+  timerType,
+  onBack,
+  onSaveSession,
+}: PomodoroTimerProps) {
   const config = TIMER_CONFIGS[timerType];
   const [mode, setMode] = useState<TimerMode>('work');
   const [timeLeft, setTimeLeft] = useState(config.work);
@@ -35,6 +40,11 @@ export function PomodoroTimer({ timerType, onBack }: PomodoroTimerProps) {
 
             if (mode === 'work') {
               setSessionsCompleted((s) => s + 1);
+
+              onSaveSession?.({
+                type: timerType,
+                duration: Math.round(config.work / 60),
+              });
             }
 
             return 0;
@@ -48,7 +58,7 @@ export function PomodoroTimer({ timerType, onBack }: PomodoroTimerProps) {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [isRunning, timeLeft, mode]);
+  }, [isRunning, timeLeft, mode, timerType, config.work, onSaveSession]);
 
   const playNotification = () => {
     if (audioRef.current) {

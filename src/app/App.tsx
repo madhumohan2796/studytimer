@@ -1,15 +1,28 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Clock, Menu, X } from 'lucide-react';
 import { TimerHome } from './components/TimerHome';
 import { PomodoroTimer } from './components/PomodoroTimer';
+import { CustomTimer } from './components/CustomTimer';
 import { Stopwatch } from './components/Stopwatch';
 import { BlogList } from './components/BlogList';
 import { BlogPost } from './components/BlogPost';
-import { CustomTimer } from './components/CustomTimer';
+import { Auth } from './components/Auth';
+import { Dashboard } from './components/Dashboard';
 
 type Theme = 'warm' | 'mono' | 'multicolor';
 type TimerType = 'pomodoro-25' | 'pomodoro-120' | 'pomodoro-240' | 'custom' | 'stopwatch';
-type Page = 'home' | 'blog';
+type Page = 'home' | 'blog' | 'auth' | 'dashboard';
+
+type User = {
+  email: string;
+  name: string;
+};
+
+type SessionData = {
+  type: string;
+  duration: number;
+  date: string;
+};
 
 export default function App() {
   const [theme, setTheme] = useState<Theme>('warm');
@@ -17,6 +30,31 @@ export default function App() {
   const [activeTimer, setActiveTimer] = useState<TimerType | null>(null);
   const [selectedBlogId, setSelectedBlogId] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const savedUser = localStorage.getItem('studyTimerCurrentUser');
+
+    if (savedUser) {
+      setCurrentUser(JSON.parse(savedUser));
+    }
+  }, []);
+
+  const saveSession = (session: Omit<SessionData, 'date'>) => {
+    if (!currentUser) return;
+
+    const key = `studyTimer_sessions_${currentUser.email}`;
+    const existingSessions: SessionData[] = JSON.parse(
+      localStorage.getItem(key) || '[]'
+    );
+
+    const newSession: SessionData = {
+      ...session,
+      date: new Date().toISOString(),
+    };
+
+    localStorage.setItem(key, JSON.stringify([...existingSessions, newSession]));
+  };
 
   const goHome = () => {
     setCurrentPage('home');
@@ -32,8 +70,40 @@ export default function App() {
     setMobileMenuOpen(false);
   };
 
+  const goAuth = () => {
+    setCurrentPage('auth');
+    setActiveTimer(null);
+    setSelectedBlogId(null);
+    setMobileMenuOpen(false);
+  };
+
+  const goDashboard = () => {
+    setCurrentPage('dashboard');
+    setActiveTimer(null);
+    setSelectedBlogId(null);
+    setMobileMenuOpen(false);
+  };
+
+  const handleLogin = (user: User) => {
+    setCurrentUser(user);
+    localStorage.setItem('studyTimerCurrentUser', JSON.stringify(user));
+    setCurrentPage('dashboard');
+    setActiveTimer(null);
+    setSelectedBlogId(null);
+  };
+
+  const handleLogout = () => {
+    setCurrentUser(null);
+    localStorage.removeItem('studyTimerCurrentUser');
+    setCurrentPage('home');
+    setActiveTimer(null);
+    setSelectedBlogId(null);
+    setMobileMenuOpen(false);
+  };
+
   const handleTimerSelect = (timerType: TimerType) => {
     setActiveTimer(timerType);
+    setCurrentPage('home');
     setMobileMenuOpen(false);
   };
 
@@ -85,39 +155,66 @@ export default function App() {
                 Blog
               </button>
 
+              {currentUser ? (
+                <>
+                  <button
+                    onClick={goDashboard}
+                    className={`rounded-full px-6 py-2 transition-all ${
+                      currentPage === 'dashboard'
+                        ? 'bg-primary text-primary-foreground'
+                        : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                    }`}
+                  >
+                    Dashboard
+                  </button>
+
+                  <span className="text-sm text-muted-foreground">
+                    Hi, {currentUser.name}
+                  </span>
+
+                  <button
+                    onClick={handleLogout}
+                    className="rounded-full px-6 py-2 text-muted-foreground transition-all hover:bg-muted hover:text-foreground"
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={goAuth}
+                  className={`rounded-full px-6 py-2 transition-all ${
+                    currentPage === 'auth'
+                      ? 'bg-primary text-primary-foreground'
+                      : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                  }`}
+                >
+                  Login / Sign Up
+                </button>
+              )}
+
               <div className="ml-2 flex gap-3">
-                <button
+                <ThemeButton
+                  active={theme === 'warm'}
                   onClick={() => setTheme('warm')}
-                  className={`h-10 w-10 rounded-full transition-all ${
-                    theme === 'warm'
-                      ? 'ring-4 ring-primary ring-offset-2 ring-offset-background'
-                      : 'hover:scale-110'
-                  }`}
                   style={{ background: '#C85C3F' }}
-                  aria-label="Warm theme"
+                  label="Warm theme"
                 />
-                <button
+
+                <ThemeButton
+                  active={theme === 'mono'}
                   onClick={() => setTheme('mono')}
-                  className={`h-10 w-10 rounded-full transition-all ${
-                    theme === 'mono'
-                      ? 'ring-4 ring-primary ring-offset-2 ring-offset-background'
-                      : 'hover:scale-110'
-                  }`}
                   style={{ background: '#000000' }}
-                  aria-label="Mono theme"
+                  label="Mono theme"
                 />
-                <button
+
+                <ThemeButton
+                  active={theme === 'multicolor'}
                   onClick={() => setTheme('multicolor')}
-                  className={`h-10 w-10 rounded-full transition-all ${
-                    theme === 'multicolor'
-                      ? 'ring-4 ring-primary ring-offset-2 ring-offset-background'
-                      : 'hover:scale-110'
-                  }`}
                   style={{
                     background:
                       'linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 25%, #45B7D1 50%, #FFA07A 75%, #98D8C8 100%)',
                   }}
-                  aria-label="Multicolor theme"
+                  label="Multicolor theme"
                 />
               </div>
             </div>
@@ -134,59 +231,72 @@ export default function App() {
           {mobileMenuOpen && (
             <div className="border-t border-border px-4 py-4 md:hidden">
               <div className="grid gap-3">
-                <button
+                <MobileNavButton
+                  active={currentPage === 'home'}
                   onClick={goHome}
-                  className={`rounded-2xl px-5 py-4 text-left transition-all ${
-                    currentPage === 'home'
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-muted text-foreground'
-                  }`}
-                >
-                  Home
-                </button>
+                  label="Home"
+                />
 
-                <button
+                <MobileNavButton
+                  active={currentPage === 'blog'}
                   onClick={goBlog}
-                  className={`rounded-2xl px-5 py-4 text-left transition-all ${
-                    currentPage === 'blog'
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-muted text-foreground'
-                  }`}
-                >
-                  Blog
-                </button>
+                  label="Blog"
+                />
+
+                {currentUser ? (
+                  <>
+                    <MobileNavButton
+                      active={currentPage === 'dashboard'}
+                      onClick={goDashboard}
+                      label="Dashboard"
+                    />
+
+                    <div className="rounded-2xl bg-muted px-5 py-4 text-muted-foreground">
+                      Signed in as {currentUser.name}
+                    </div>
+
+                    <MobileNavButton
+                      active={false}
+                      onClick={handleLogout}
+                      label="Logout"
+                    />
+                  </>
+                ) : (
+                  <MobileNavButton
+                    active={currentPage === 'auth'}
+                    onClick={goAuth}
+                    label="Login / Sign Up"
+                  />
+                )}
 
                 <div className="rounded-2xl bg-muted p-4">
                   <p className="mb-3 text-sm text-muted-foreground">Theme</p>
                   <div className="flex gap-4">
-                    <button
+                    <ThemeButton
+                      active={theme === 'warm'}
                       onClick={() => setTheme('warm')}
-                      className={`h-11 w-11 rounded-full transition-all ${
-                        theme === 'warm' ? 'ring-4 ring-primary ring-offset-2 ring-offset-background' : ''
-                      }`}
                       style={{ background: '#C85C3F' }}
-                      aria-label="Warm theme"
+                      label="Warm theme"
+                      large
                     />
-                    <button
+
+                    <ThemeButton
+                      active={theme === 'mono'}
                       onClick={() => setTheme('mono')}
-                      className={`h-11 w-11 rounded-full transition-all ${
-                        theme === 'mono' ? 'ring-4 ring-primary ring-offset-2 ring-offset-background' : ''
-                      }`}
                       style={{ background: '#000000' }}
-                      aria-label="Mono theme"
+                      label="Mono theme"
+                      large
                     />
-                    <button
+
+                    <ThemeButton
+                      active={theme === 'multicolor'}
                       onClick={() => setTheme('multicolor')}
-                      className={`h-11 w-11 rounded-full transition-all ${
-                        theme === 'multicolor'
-                          ? 'ring-4 ring-primary ring-offset-2 ring-offset-background'
-                          : ''
-                      }`}
                       style={{
                         background:
                           'linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 25%, #45B7D1 50%, #FFA07A 75%, #98D8C8 100%)',
                       }}
-                      aria-label="Multicolor theme"
+                      label="Multicolor theme"
+                      large
                     />
                   </div>
                 </div>
@@ -202,17 +312,73 @@ export default function App() {
             ) : (
               <BlogList onBlogSelect={handleBlogSelect} />
             )
+          ) : currentPage === 'auth' ? (
+            <Auth onLogin={handleLogin} />
+          ) : currentPage === 'dashboard' && currentUser ? (
+            <Dashboard user={currentUser} />
           ) : activeTimer === null ? (
             <TimerHome onTimerSelect={handleTimerSelect} />
-                  ) : activeTimer === 'stopwatch' ? (
-                      <Stopwatch onBack={handleBackToHome} />
-                  ) : activeTimer === 'custom' ? (
-                      <CustomTimer onBack={handleBackToHome} />
-                  ) : (
-                      <PomodoroTimer timerType={activeTimer} onBack={handleBackToHome} />
-                  )}
+          ) : activeTimer === 'stopwatch' ? (
+            <Stopwatch onBack={handleBackToHome} onSaveSession={saveSession} />
+          ) : activeTimer === 'custom' ? (
+            <CustomTimer onBack={handleBackToHome} onSaveSession={saveSession} />
+          ) : (
+            <PomodoroTimer
+              timerType={activeTimer}
+              onBack={handleBackToHome}
+              onSaveSession={saveSession}
+            />
+          )}
         </main>
       </div>
     </div>
+  );
+}
+
+function ThemeButton({
+  active,
+  onClick,
+  style,
+  label,
+  large = false,
+}: {
+  active: boolean;
+  onClick: () => void;
+  style: React.CSSProperties;
+  label: string;
+  large?: boolean;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`${large ? 'h-11 w-11' : 'h-10 w-10'} rounded-full transition-all ${
+        active
+          ? 'ring-4 ring-primary ring-offset-2 ring-offset-background'
+          : 'hover:scale-110'
+      }`}
+      style={style}
+      aria-label={label}
+    />
+  );
+}
+
+function MobileNavButton({
+  active,
+  onClick,
+  label,
+}: {
+  active: boolean;
+  onClick: () => void;
+  label: string;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`rounded-2xl px-5 py-4 text-left transition-all ${
+        active ? 'bg-primary text-primary-foreground' : 'bg-muted text-foreground'
+      }`}
+    >
+      {label}
+    </button>
   );
 }

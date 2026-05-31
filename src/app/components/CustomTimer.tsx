@@ -3,9 +3,10 @@ import { Play, Pause, RotateCcw, ArrowLeft } from 'lucide-react';
 
 interface CustomTimerProps {
   onBack: () => void;
+  onSaveSession?: (session: { type: string; duration: number }) => void;
 }
 
-export function CustomTimer({ onBack }: CustomTimerProps) {
+export function CustomTimer({ onBack, onSaveSession }: CustomTimerProps) {
   const [hours, setHours] = useState('0');
   const [minutes, setMinutes] = useState('30');
   const [seconds, setSeconds] = useState('0');
@@ -38,6 +39,12 @@ export function CustomTimer({ onBack }: CustomTimerProps) {
             setIsRunning(false);
             setSessionsCompleted((count) => count + 1);
             playNotification();
+
+            onSaveSession?.({
+              type: 'custom',
+              duration: Math.max(1, Math.round(getTotalSeconds() / 60)),
+            });
+
             return 0;
           }
 
@@ -49,7 +56,7 @@ export function CustomTimer({ onBack }: CustomTimerProps) {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [isRunning, timeLeft]);
+  }, [isRunning, timeLeft, onSaveSession]);
 
   const playNotification = () => {
     if (audioRef.current) {
