@@ -5,6 +5,7 @@ import { PomodoroTimer } from './components/PomodoroTimer';
 import { Stopwatch } from './components/Stopwatch';
 import { BlogList } from './components/BlogList';
 import { BlogPost } from './components/BlogPost';
+import { CustomTimer } from './components/CustomTimer';
 
 type Theme = 'warm' | 'mono' | 'multicolor';
 type TimerType = 'pomodoro-25' | 'pomodoro-120' | 'pomodoro-240' | 'custom' | 'stopwatch';
@@ -203,11 +204,13 @@ export default function App() {
             )
           ) : activeTimer === null ? (
             <TimerHome onTimerSelect={handleTimerSelect} />
-          ) : activeTimer === 'stopwatch' ? (
-            <Stopwatch onBack={handleBackToHome} />
-          ) : (
-            <PomodoroTimer timerType={activeTimer} onBack={handleBackToHome} />
-          )}
+                  ) : activeTimer === 'stopwatch' ? (
+                      <Stopwatch onBack={handleBackToHome} />
+                  ) : activeTimer === 'custom' ? (
+                      <CustomTimer onBack={handleBackToHome} />
+                  ) : (
+                      <PomodoroTimer timerType={activeTimer} onBack={handleBackToHome} />
+                  )}
         </main>
       </div>
     </div>

@@ -1,27 +1,32 @@
 import { useState, useEffect, useRef } from 'react';
 import { Play, Pause, RotateCcw, ArrowLeft } from 'lucide-react';
 
-type TimerMode = 'work' | 'shortBreak' | 'longBreak';
-type TimerType = 'pomodoro-25' | 'pomodoro-120' | 'pomodoro-240';
-
-interface PomodoroTimerProps {
-  timerType: TimerType;
+interface CustomTimerProps {
   onBack: () => void;
 }
 
-const TIMER_CONFIGS = {
-  'pomodoro-25': { work: 25 * 60, shortBreak: 5 * 60, longBreak: 15 * 60 },
-  'pomodoro-120': { work: 120 * 60, shortBreak: 20 * 60, longBreak: 30 * 60 },
-  'pomodoro-240': { work: 240 * 60, shortBreak: 30 * 60, longBreak: 45 * 60 },
-};
-
-export function PomodoroTimer({ timerType, onBack }: PomodoroTimerProps) {
-  const config = TIMER_CONFIGS[timerType];
-  const [mode, setMode] = useState<TimerMode>('work');
-  const [timeLeft, setTimeLeft] = useState(config.work);
+export function CustomTimer({ onBack }: CustomTimerProps) {
+  const [hours, setHours] = useState('0');
+  const [minutes, setMinutes] = useState('30');
+  const [seconds, setSeconds] = useState('0');
+  const [timeLeft, setTimeLeft] = useState(30 * 60);
   const [isRunning, setIsRunning] = useState(false);
   const [sessionsCompleted, setSessionsCompleted] = useState(0);
   const audioRef = useRef<HTMLAudioElement>(null);
+
+  const getTotalSeconds = () => {
+    const h = Number(hours) || 0;
+    const m = Number(minutes) || 0;
+    const s = Number(seconds) || 0;
+
+    return Math.max(1, h * 3600 + m * 60 + s);
+  };
+
+  useEffect(() => {
+    if (!isRunning) {
+      setTimeLeft(getTotalSeconds());
+    }
+  }, [hours, minutes, seconds]);
 
   useEffect(() => {
     let interval: ReturnType<typeof setInterval> | null = null;
@@ -31,12 +36,8 @@ export function PomodoroTimer({ timerType, onBack }: PomodoroTimerProps) {
         setTimeLeft((prev) => {
           if (prev <= 1) {
             setIsRunning(false);
+            setSessionsCompleted((count) => count + 1);
             playNotification();
-
-            if (mode === 'work') {
-              setSessionsCompleted((s) => s + 1);
-            }
-
             return 0;
           }
 
@@ -48,7 +49,7 @@ export function PomodoroTimer({ timerType, onBack }: PomodoroTimerProps) {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [isRunning, timeLeft, mode]);
+  }, [isRunning, timeLeft]);
 
   const playNotification = () => {
     if (audioRef.current) {
@@ -56,10 +57,10 @@ export function PomodoroTimer({ timerType, onBack }: PomodoroTimerProps) {
     }
   };
 
-  const formatTime = (seconds: number) => {
-    const hrs = Math.floor(seconds / 3600);
-    const mins = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
+  const formatTime = (totalSeconds: number) => {
+    const hrs = Math.floor(totalSeconds / 3600);
+    const mins = Math.floor((totalSeconds % 3600) / 60);
+    const secs = totalSeconds % 60;
 
     if (hrs > 0) {
       return `${hrs}:${mins.toString().padStart(2, '0')}:${secs
@@ -72,19 +73,31 @@ export function PomodoroTimer({ timerType, onBack }: PomodoroTimerProps) {
       .padStart(2, '0')}`;
   };
 
-  const handleModeChange = (newMode: TimerMode) => {
-    setMode(newMode);
-    setTimeLeft(config[newMode]);
-    setIsRunning(false);
+  const handleInputChange = (
+    value: string,
+    setter: React.Dispatch<React.SetStateAction<string>>,
+    max: number
+  ) => {
+    const cleaned = value.replace(/\D/g, '');
+
+    if (cleaned === '') {
+      setter('');
+      return;
+    }
+
+    const numberValue = Math.min(max, Number(cleaned));
+    setter(String(numberValue));
   };
 
   const handleReset = () => {
-    setTimeLeft(config[mode]);
     setIsRunning(false);
+    setTimeLeft(getTotalSeconds());
   };
 
-  const getDuration = (timerMode: TimerMode) => config[timerMode];
-  const progress = ((getDuration(mode) - timeLeft) / getDuration(mode)) * 100;
+  const progress =
+    getTotalSeconds() > 0
+      ? ((getTotalSeconds() - timeLeft) / getTotalSeconds()) * 100
+      : 0;
 
   return (
     <div className="min-h-screen">
@@ -98,42 +111,62 @@ export function PomodoroTimer({ timerType, onBack }: PomodoroTimerProps) {
 
       <div className="flex min-h-screen items-start justify-center px-4 pb-16 pt-32 sm:px-6 lg:px-16">
         <div className="flex flex-1 flex-col items-center justify-center">
-          <div className="mb-10 sm:mb-16 lg:mb-20">
-            <div className="flex flex-wrap justify-center gap-3">
-              <button
-                onClick={() => handleModeChange('work')}
-                className={`rounded-full px-5 py-3 transition-all sm:px-8 ${
-                  mode === 'work'
-                    ? 'bg-primary text-primary-foreground'
-                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-                }`}
-              >
-                Focus
-              </button>
-
-              <button
-                onClick={() => handleModeChange('shortBreak')}
-                className={`rounded-full px-5 py-3 transition-all sm:px-8 ${
-                  mode === 'shortBreak'
-                    ? 'bg-primary text-primary-foreground'
-                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-                }`}
-              >
-                Short Break
-              </button>
-
-              <button
-                onClick={() => handleModeChange('longBreak')}
-                className={`rounded-full px-5 py-3 transition-all sm:px-8 ${
-                  mode === 'longBreak'
-                    ? 'bg-primary text-primary-foreground'
-                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-                }`}
-              >
-                Long Break
-              </button>
-            </div>
+          <div className="mb-10 text-center sm:mb-12">
+            <h1 className="mb-3 text-4xl sm:text-5xl lg:text-6xl">
+              Custom Timer
+            </h1>
+            <p className="text-muted-foreground">
+              Type your own hours, minutes and seconds.
+            </p>
           </div>
+
+          {!isRunning && (
+            <div className="mb-10 rounded-3xl border border-border bg-card p-5 shadow-sm sm:p-6">
+              <div className="flex flex-wrap justify-center gap-4">
+                <label className="flex flex-col items-center gap-2">
+                  <span className="text-sm text-muted-foreground">Hours</span>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    value={hours}
+                    onChange={(event) =>
+                      handleInputChange(event.target.value, setHours, 23)
+                    }
+                    onFocus={(event) => event.target.select()}
+                    className="w-20 cursor-text rounded-2xl border border-border bg-background px-3 py-3 text-center text-xl outline-none transition focus:border-primary"
+                  />
+                </label>
+
+                <label className="flex flex-col items-center gap-2">
+                  <span className="text-sm text-muted-foreground">Minutes</span>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    value={minutes}
+                    onChange={(event) =>
+                      handleInputChange(event.target.value, setMinutes, 59)
+                    }
+                    onFocus={(event) => event.target.select()}
+                    className="w-20 cursor-text rounded-2xl border border-border bg-background px-3 py-3 text-center text-xl outline-none transition focus:border-primary"
+                  />
+                </label>
+
+                <label className="flex flex-col items-center gap-2">
+                  <span className="text-sm text-muted-foreground">Seconds</span>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    value={seconds}
+                    onChange={(event) =>
+                      handleInputChange(event.target.value, setSeconds, 59)
+                    }
+                    onFocus={(event) => event.target.select()}
+                    className="w-20 cursor-text rounded-2xl border border-border bg-background px-3 py-3 text-center text-xl outline-none transition focus:border-primary"
+                  />
+                </label>
+              </div>
+            </div>
+          )}
 
           <div className="relative mb-12 sm:mb-16 lg:mb-20">
             <svg
@@ -196,7 +229,7 @@ export function PomodoroTimer({ timerType, onBack }: PomodoroTimerProps) {
 
           <div className="text-center">
             <p className="mb-2 text-sm uppercase tracking-wide text-muted-foreground">
-              Sessions Completed Today
+              Custom Sessions Completed Today
             </p>
             <p className="text-5xl tabular-nums sm:text-6xl">
               {sessionsCompleted}
